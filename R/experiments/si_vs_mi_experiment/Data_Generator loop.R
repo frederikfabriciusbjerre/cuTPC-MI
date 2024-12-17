@@ -6,7 +6,7 @@ library(tictoc)
 library(igraph)
 library(mice)
 library(miceadds)
-source("si_vs_mi_experiment/cohort_sim_utils.R")
+source("R/experiments/si_vs_mi_experiment/cohort_sim_utils.R")
 
 config_name <- "config1n3000"
 n_datasets <- 100
@@ -41,5 +41,5 @@ for (i in 1:n_datasets) {
     imputed_data <- mice(amputed_data, m = m, method = "norm", printFlag = FALSE, remove.collinear = TRUE)
 
     # write mids obj
-    save(imputed_data, file = paste0("si_vs_mi_experiment/imputed_datasets_cohort_", config_name, "imp", i, ".Rdata")
+    save(imputed_data, file = paste0("si_vs_mi_experiment/imputed_datasets_cohort_", config_name, "imp", i, ".Rdata"))
 }

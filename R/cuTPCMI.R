@@ -164,7 +164,7 @@ tpc <- function (suffStat, indepTest, alpha, labels, p,
                  verbose = FALSE,
                  numCores = NULL, cl.type = "PSOCK",
                  clusterexport = NULL,
-                 tpc_cons_intern = "standard"){
+                 tpc_cons_intern = "standard", df_method){
   cl <- match.call()
   if (!missing(p)) {
     stopifnot(is.numeric(p), length(p <- as.integer(p)) == 1, p >= 2)
@@ -311,9 +311,9 @@ tpc <- function (suffStat, indepTest, alpha, labels, p,
   skel.method <- match.arg(skel.method)
 
   if (skel.method == "cuda"){
-    skel <- tskeleton_cuda_MI(suffStat, indepTest, alpha, labels = labels,
+    skel <- tskeleton_cuda_MI(suffStat, indepTest, alpha, labels = labels, p = p,
                               method = skel.method, fixedGaps = fixedGaps, fixedEdges = fixedEdges,
-                              m.max = m.max, verbose = verbose, tiers = tiers)
+                              m.max = m.max, verbose = verbose, tiers = tiers, df_method = df_method)
   }
   else if (skel.method == "stable.parallel") {
     if (is.null(numCores)) {stop("Please specify 'numCores'.")}
@@ -487,7 +487,7 @@ library(mice)
 tskeleton_cuda_MI <- function (suffStat, indepTest, alpha, labels, p,
                        method = c("cuda"), m.max = Inf,
                        fixedGaps = NULL, fixedEdges = NULL, NAdelete = TRUE,
-                       tiers = NULL, verbose = FALSE) {
+                       tiers = NULL, verbose = FALSE, df_method) {
      
      cl <- match.call()
      if (!missing(p))
@@ -563,6 +563,18 @@ tskeleton_cuda_MI <- function (suffStat, indepTest, alpha, labels, p,
     }
     sepsetMatrix <- matrix(-1, nrow = p * p, ncol = 32)
     dyn.load("cuda/SkeletonMI.so")
+        if (df_method == "old"){
+        df_method_int <- 0
+    }
+    else if (df_method == "br"){
+        df_method_int <- 1
+    }
+    else if (df_method == "reiter"){
+        df_method_int <- 2
+    }
+    else{
+        stop("df method is not specified correctly. Should be either 'old', 'br', or 'reiter'")
+    }
     start_time <- proc.time()
     z <- .C("SkeletonMI",
         C = as.double(C_vector),
@@ -575,7 +587,8 @@ tskeleton_cuda_MI <- function (suffStat, indepTest, alpha, labels, p,
         max_level = as.integer(max_level),
         pmax = as.double(pMax),
         sepsetmat = as.integer(sepsetMatrix),
-        tiers = as.integer(tiers)
+        tiers = as.integer(tiers),
+        DF_method = as.integer(df_method_int)
     )
     ord <- z$l
     G <- (matrix(z$G, nrow = p, ncol = p)) > 0
