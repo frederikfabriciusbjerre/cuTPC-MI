@@ -7,7 +7,7 @@ It is possible to include tiered background information as seen in [tpc](https:/
 For installation of dependencies, we refer to the previously mentioned libraries.
 
 ## Compilation 
-Execute "nvcc -O3 --shared -Xcompiler -fPIC -o SkeletonMI.so cuPC-S-MI.cu" to compile .cu files
+Execute ```nvcc -O3 --shared -Xcompiler -fPIC -o SkeletonMI.so cuPC-S-MI.cu``` to compile .cu files
 
 ## Example
 An example of usage of the temporal PC-algorithm with multiple imputations utilizing CUDA-based GPU parallelization can be seen in
