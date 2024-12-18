@@ -1,4 +1,6 @@
 # CUDA-Based Parallelization of the Temporal PC-algorithm with Multiple Imputation
+This implementation is made for the Master Thesis _Scalable Constraint-Based Causal Discovery with Multiple Imputation for Incomplete Data_ by Frederik Fabricius-Bjerre, December 2024. 
+
 The implementation is an extension of the [cuPC](https://github.com/LIS-Laboratory/cupc/tree/master) implementation for multiple imputations of Gaussian data, utilizing the algorithmic procedure from the [gaussMItest](https://github.com/bips-hb/micd/blob/master/R/gaussMItest.R) from the [micd](https://github.com/bips-hb/micd/) library.
 It is possible to include tiered background information as seen in [tpc](https://github.com/bips-hb/tpc). 
 
